@@ -1,41 +1,34 @@
 package model.data_structures;
 
-public class Node<T> 
-	{
-		T info;
-		Node<T>siguiente;
-		
-		public Node(T info, Node<T> siguiente)
-		{
-			this.info =info;
-			this.siguiente = siguiente;
-			
-		}
+public class Node<T> {
+	
+	private Node<T> next;
 
-		 public T darInfo( )
-		    {
-		        return info;
-		    }
-		 public void setInfo( )
-		    {
-		        this.info = info;
-		    }
-		 public Node<T> darSiguiente( )
-		    {
-		        return siguiente;
-		    }
-		 public void cambiarSiguiente( Node<T> objeto )
-		    {
-		        this.siguiente = objeto;
-		    }
-		   public void desconectarSiguiente( )
-		    {
-		        siguiente = siguiente.siguiente;
-		    }
-		   public void insertarDespues( Node<T> objeto )
-		    {
-			   objeto.siguiente = siguiente;
-		        siguiente = objeto;
-		    }
+	private T object;
+
+	public Node (T pObject) 
+	{
+		next = null;
+		object = pObject;
 	}
 
+	public Node<T> getNext() 
+	{
+		return next;}
+
+	public void setNext ( Node<T> pNext) 
+	{
+		next = pNext;
+	}
+
+	public T getObject()
+	{
+		return object;
+	}
+
+	public void setObject (T pObject) 
+	{
+		object = pObject;
+	}
+
+}

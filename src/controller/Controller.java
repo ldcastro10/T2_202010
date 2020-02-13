@@ -1,14 +1,21 @@
 package controller;
 
+
+import java.util.List;
 import java.util.Scanner;
 
+import model.data_structures.Node;
+import model.data_structures.Queue;
+import model.data_structures.Stack;
+import model.Comparendo;
 import model.logic.Modelo;
+
 import view.View;
 
 public class Controller {
 
 	/* Instancia del Modelo*/
-	private Modelo modelo;
+	private Modelo<Comparendo> modelo;
 	
 	/* Instancia de la Vista*/
 	private View view;
@@ -20,10 +27,10 @@ public class Controller {
 	public Controller ()
 	{
 		view = new View();
-		modelo = new Modelo();
+		modelo = new Modelo<Comparendo>();
 	}
 		
-	public void run() 
+	public void run() throws Exception 
 	{
 		Scanner lector = new Scanner(System.in);
 		boolean fin = false;
@@ -36,64 +43,74 @@ public class Controller {
 			int option = lector.nextInt();
 			switch(option){
 				case 1:
-					view.printMessage("--------- \nCrear Arreglo \nDar capacidad inicial del arreglo: ");
-				    int capacidad = lector.nextInt();
-				    modelo = new Modelo(capacidad); 
-				    view.printMessage("Arreglo Dinamico creado");
-				    view.printMessage("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
+				    modelo = new Modelo<Comparendo>();
+					
+				    long start = System.currentTimeMillis();
+				    modelo.cargarDatos();
+				    long end = System.currentTimeMillis();
+				    
+				    view.printMessage("Tiempo de carga (seg): " + (end-start)/1000.0);
 
+					break;
+					
+		
+			
+			
 				case 2:
-					view.printMessage("--------- \nDar cadena (simple) a ingresar: ");
-					dato = lector.next();
-					modelo.agregar(dato);
-					view.printMessage("Dato agregado");
-					view.printMessage("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
+					System.out.println("Procesar cola para consultar el grupo ordenado mas grande");
+					System.out.println("Ingrese la infraccion a buscar");
+					String pInfraccion = lector.next();
+					try {
+						Queue<Node<Comparendo>> resultados = modelo.consecutivosinfra(pInfraccion);
+						for (int i = 0; i < resultados.darTamanio(); i++)
+						{
+							Comparendo comp = resultados.sacarDeCola().getObject();
+							System.out.println("------------------------------------------------------------------");
+							System.out.println("Comparendo "+(i+1)+":");
+							System.out.println("Infraccion: "+comp.getInfra());
+							System.out.println("Id: "+comp.getid());
+							System.out.println("Fecha: "+comp.getfecha());
+							System.out.println("Clase: "+comp.getclase());
+							System.out.println("Servicio: "+comp.gettipo());
+							System.out.println("Localidad: "+comp.getlocalidad());
+							System.out.println("-------------------------------------------------------------------");					
+						}
+					} catch (Exception e) {e.printStackTrace();}
 					break;
 
 				case 3:
-					view.printMessage("--------- \nDar cadena (simple) a buscar: ");
-					dato = lector.next();
-					respuesta = modelo.buscar(dato);
-					if ( respuesta != null)
-					{
-						view.printMessage("Dato encontrado: "+ respuesta);
-					}
-					else
-					{
-						view.printMessage("Dato NO encontrado");
-					}
-					view.printMessage("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
-
-				case 4:
-					view.printMessage("--------- \nDar cadena (simple) a eliminar: ");
-					dato = lector.next();
-					respuesta = modelo.eliminar(dato);
-					if ( respuesta != null)
-					{
-						view.printMessage("Dato eliminado "+ respuesta);
-					}
-					else
-					{
-						view.printMessage("Dato NO eliminado");							
-					}
-					view.printMessage("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
-
-				case 5: 
-					view.printMessage("--------- \nContenido del Arreglo: ");
-					view.printModelo(modelo);
-					view.printMessage("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;	
+					System.out.println("Procesar pila para buscar los ultimos comparendos");
+					System.out.println("Ingrese la infraccion a buscar");
+					String comp = lector.next();
+					System.out.println("Ingrese la cantidad de comparendos a buscar");
+					int cantidad = lector.nextInt();
 					
-				case 6: 
-					view.printMessage("--------- \n Hasta pronto !! \n---------"); 
-					lector.close();
-					fin = true;
-					break;	
+					
+		
+					Queue<Node<Comparendo>> resultado = modelo.ultimosComparendos(comp, cantidad);				
+					System.out.println("Resultado de la consulta: ");
+					
+					for(int i = 0; i < resultado.darTamanio();i++)
+					{
+						
+						String Infraccion = resultado.sacarDeCola().getObject().getInfra();
+						int Id = resultado.sacarDeCola().getObject().getid();
+						//Date Fecha = resultado.sacarDeCola().getObject().getfecha();
+						String Clase = resultado.sacarDeCola().getObject().getclase();
+						String Servicio = resultado.sacarDeCola().getObject().gettipo();
+						String Localidad = resultado.sacarDeCola().getObject().getlocalidad();
+				
+						System.out.println("------------------------------------------------------------------");
+						System.out.println("Comparendo "+(i+1)+":");
+						System.out.println("Infraccion: "+Infraccion);
+						System.out.println("Id: "+Id);
+						System.out.println("Fecha: "+Infraccion);
+						System.out.println("Clase: "+Clase);
+						System.out.println("Servicio: "+Servicio);
+						System.out.println("Localidad: "+Localidad);
+						System.out.println("-------------------------------------------------------------------");
+					}
 
-				default: 
 					view.printMessage("--------- \n Opcion Invalida !! \n---------");
 					break;
 			}
